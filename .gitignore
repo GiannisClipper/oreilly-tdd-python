@@ -1,0 +1,15 @@
+#git ignores following folders and files
+
+Test-Driven*.pdf
+
+geckodriver*.zip
+todo/geckodriver.exe
+todo/geckodriver.log
+
+todo/db.sqlite3
+todo/migrations/
+
+todo/**/__pycache__
+
+venv/
+
