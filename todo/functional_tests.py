@@ -7,7 +7,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(3)
+        self.browser.implicitly_wait(5)
         # Standard in Selenium tests. Selenium is reasonably good at waiting for
         # pages to complete loading before it tries to do anything, but it’s not perfect.
         # The implicitly_wait tells it to wait a few seconds if it needs to. When asked to find
@@ -16,49 +16,52 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def test_start_a_new_list_and_retrieve_it_later(self):
-        # a user visit todo url
+    def find_todo_item_in_list(self, text):
+        #import time
+        #time.sleep(5)
+        listElem = self.browser.find_element_by_id('todo_list')
+        itemElems = listElem.find_elements_by_tag_name('li')
+        #print([x.text for x in itemElems])
+        #self.assertTrue(
+        #    any(x.text == text for x in itemElems)
+        #)
+        self.assertIn(text, [x.test for x in itemElems])
+
+    def test_edit_a_new_list_and_retrieve_it_later(self):
+        # call home page and
+        # check that is the proper home page
         self.browser.get('http://localhost:8000')
-
-        # verify that is in correct page
-        self.assertIn('ToDo lists', self.browser.title)
         headerElem = self.browser.find_element_by_tag_name('h1')
-        self.assertIn('ToDo', headerElem.text)
 
-        # invited to enter a new todo text item
+        self.assertIn('ToDo lists', self.browser.title)
+        self.assertIn('Your ToDo list', headerElem.text)
+
+        # can enter a new todo item
         inputElem = self.browser.find_element_by_id('add_todo')
+
         self.assertEqual(
             inputElem.get_attribute('placeholder'),
             'Add new ToDo item'
         )
 
-        # enter the text "Go for a walk"
+        # enter a first item and
+        # updated page should display the text entered
         inputElem.send_keys('Go for a walk')
         inputElem.send_keys(Keys.ENTER)
 
-        # page updated and display the text entered
-        listElem = self.browser.find_element_by_id('todo_list')
-        itemElems = listElem.find_elements_by_tag_name('li')
-        self.assertTrue(
-            any(x.text == 'Go for a walk' for x in itemElems)
-        )
+        self.find_todo_item_in_list('Go for a walk')
 
-        # still invited to enter a new todo text item
-        # and enter "Go another walk"
+        # enter a second item and
+        # updated page should display both texts entered
         inputElem.send_keys('Go another walk')
         inputElem.send_keys(Keys.ENTER)
 
-        # page updated again showing both texts entered
-        self.assertTrue(
-            any(x.text == 'Go for a walk' for x in itemElems)
-        )
-        self.assertTrue(
-            any(x.text == 'Go another walk' for x in itemElems)
-        )
+        self.find_todo_item_in_list('Go for a walk')
+        self.find_todo_item_in_list('Go another walk')
 
-        # user noticed page generated a unique url accessing previous entries
+        # page provides a unique url to access previous entries
 
-        # visit unique url and access previous entries
+        # call unique url with previous entries
 
         self.fail('Have to finish all tests...')
 

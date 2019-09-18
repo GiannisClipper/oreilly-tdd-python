@@ -1,0 +1,14 @@
+Project start listening:
+..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py runserver
+
+Run functional tests:
+..\oreilly-tdd-python\todo>..\venv\Scripts\python functional_tests.py
+
+Run unit tests:
+..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py test
+
+Add new application in the project:
+..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py startapp lists
+
+Database construction based on models:
+..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py makemigrations
