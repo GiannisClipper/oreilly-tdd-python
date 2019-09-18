@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 
@@ -19,20 +20,41 @@ class NewVisitorTest(unittest.TestCase):
         # a user visit todo url
         self.browser.get('http://localhost:8000')
 
-        # verify through title that is in correct page
+        # verify that is in correct page
         self.assertIn('ToDo lists', self.browser.title)
+        headerElem = self.browser.find_element_by_tag_name('h1')
+        self.assertIn('ToDo', headerElem.text)
 
         # invited to enter a new todo text item
+        inputElem = self.browser.find_element_by_id('add_todo')
+        self.assertEqual(
+            inputElem.get_attribute('placeholder'),
+            'Add new ToDo item'
+        )
 
         # enter the text "Go for a walk"
+        inputElem.send_keys('Go for a walk')
+        inputElem.send_keys(Keys.ENTER)
 
         # page updated and display the text entered
+        listElem = self.browser.find_element_by_id('todo_list')
+        itemElems = listElem.find_elements_by_tag_name('li')
+        self.assertTrue(
+            any(x.text == 'Go for a walk' for x in itemElems)
+        )
 
         # still invited to enter a new todo text item
-
-        # enter "Go another walk"
+        # and enter "Go another walk"
+        inputElem.send_keys('Go another walk')
+        inputElem.send_keys(Keys.ENTER)
 
         # page updated again showing both texts entered
+        self.assertTrue(
+            any(x.text == 'Go for a walk' for x in itemElems)
+        )
+        self.assertTrue(
+            any(x.text == 'Go another walk' for x in itemElems)
+        )
 
         # user noticed page generated a unique url accessing previous entries
 
