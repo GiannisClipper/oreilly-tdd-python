@@ -11,7 +11,9 @@
         </form>
     
         <ul id="todo_list">
-            <li>{{ add_todo }}</li>
+            {% for item in items %}
+                <li>{{ forloop.counter }}: {{ item.text }}</li>
+            {% endfor %}
         </ul>
     </body>
 </html>

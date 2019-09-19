@@ -7,7 +7,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(5)
+        self.browser.implicitly_wait(3)
         # Standard in Selenium tests. Selenium is reasonably good at waiting for
         # pages to complete loading before it tries to do anything, but it’s not perfect.
         # The implicitly_wait tells it to wait a few seconds if it needs to. When asked to find
@@ -17,15 +17,15 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.quit()
 
     def find_todo_item_in_list(self, text):
-        #import time
-        #time.sleep(5)
+        import time
+        time.sleep(3)
         listElem = self.browser.find_element_by_id('todo_list')
         itemElems = listElem.find_elements_by_tag_name('li')
         #print([x.text for x in itemElems])
         #self.assertTrue(
         #    any(x.text == text for x in itemElems)
         #)
-        self.assertIn(text, [x.test for x in itemElems])
+        self.assertIn(text, [x.text for x in itemElems])
 
     def test_edit_a_new_list_and_retrieve_it_later(self):
         # call home page and
@@ -49,15 +49,16 @@ class NewVisitorTest(unittest.TestCase):
         inputElem.send_keys('Go for a walk')
         inputElem.send_keys(Keys.ENTER)
 
-        self.find_todo_item_in_list('Go for a walk')
+        self.find_todo_item_in_list('1: Go for a walk')
 
         # enter a second item and
         # updated page should display both texts entered
+        inputElem = self.browser.find_element_by_id('add_todo')
         inputElem.send_keys('Go another walk')
         inputElem.send_keys(Keys.ENTER)
 
-        self.find_todo_item_in_list('Go for a walk')
-        self.find_todo_item_in_list('Go another walk')
+        self.find_todo_item_in_list('1: Go for a walk')
+        self.find_todo_item_in_list('2: Go another walk')
 
         # page provides a unique url to access previous entries
 
