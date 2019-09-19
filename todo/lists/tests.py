@@ -17,13 +17,13 @@ class HomePageTest(TestCase):
 
     def test_root_url_calls_home_page_view(self):
         found = resolve(reverse('home'))
-
         self.assertEqual(found.func, home_page)
 
     def test_home_page_view_returns_correct_html(self):
         req = HttpRequest()
         res = home_page(req)
 
+        self.assertEqual(res.status_code, 200)
         self.assertTrue(res.content.strip().startswith(b'<html>'))
         self.assertIn(b'<title>ToDo lists</title>', res.content)
         self.assertTrue(res.content.strip().endswith(b'</html>'))
@@ -42,16 +42,16 @@ class HomePageTest(TestCase):
         res = self.send_a_POST_request('A new item')
 
         self.assertEqual(res.status_code, 302)
-        self.assertEqual(res['location'], '/')
+        self.assertEqual(res['location'], '/lists/unique_name')
 
-    def test_home_page_displays_saved_list_items(self):
-        Item.objects.create(text='Item 1')
-        Item.objects.create(text='Item 2')
-        req = HttpRequest()
-        res = home_page(req)
+    #def test_home_page_displays_saved_list_items(self):
+    #    Item.objects.create(text='Item 1')
+    #    Item.objects.create(text='Item 2')
+    #    req = HttpRequest()
+    #    res = home_page(req)
 
-        self.assertIn('Item 1', res.content.decode())
-        self.assertIn('Item 2', res.content.decode())
+    #    self.assertIn('Item 1', res.content.decode())
+    #    self.assertIn('Item 2', res.content.decode())
 
 
 class ItemModelTest(TestCase):
@@ -70,3 +70,19 @@ class ItemModelTest(TestCase):
         self.assertEqual(saved_items.count(), 2)
         self.assertEqual(saved_item1.text, 'A first item')
         self.assertEqual(saved_item2.text, 'A second one')
+
+
+class ListPageTest(TestCase):
+
+    def test_list_page_displays_all_items(self):
+        Item.objects.create(text='Item 1')
+        Item.objects.create(text='Item 2')
+        res = self.client.get('/lists/unique_name/')
+        # Instead of calling the view function directly
+        # we use the attribute client of the Django TestCase
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, 'Item 1')
+        self.assertContains(res, 'Item 2')
+        # Instead of assertIn/response.content.decode()
+        # Django provides the assertContains method which knows
+        # how to deal with responses and the bytes of their content

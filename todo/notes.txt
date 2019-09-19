@@ -2,13 +2,16 @@ Project start listening:
 ..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py runserver
 
 Run functional tests:
-..\oreilly-tdd-python\todo>..\venv\Scripts\python functional_tests.py
+..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py test functional_tests
 
 Run unit tests:
-..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py test
+..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py test lists
 
 Add new application in the project:
 ..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py startapp lists
 
-Database construction based on models:
+Describe database construction based on models:
 ..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py makemigrations
+
+Database construction based on migrations:
+..\oreilly-tdd-python\todo>..\venv\Scripts\python manage.py migrate
