@@ -1,9 +1,9 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -16,7 +16,7 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def find_todo_item_in_list(self, text):
+    def find_item_in_list(self, text):
         import time
         time.sleep(3)
         listElem = self.browser.find_element_by_id('todo_list')
@@ -30,7 +30,8 @@ class NewVisitorTest(unittest.TestCase):
     def test_edit_a_new_list_and_retrieve_it_later(self):
         # call home page and
         # check that is the proper home page
-        self.browser.get('http://localhost:8000')
+        #self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
         headerElem = self.browser.find_element_by_tag_name('h1')
 
         self.assertIn('ToDo lists', self.browser.title)
@@ -49,7 +50,7 @@ class NewVisitorTest(unittest.TestCase):
         inputElem.send_keys('Go for a walk')
         inputElem.send_keys(Keys.ENTER)
 
-        self.find_todo_item_in_list('1: Go for a walk')
+        self.find_item_in_list('1: Go for a walk')
 
         # enter a second item and
         # updated page should display both texts entered
@@ -57,15 +58,11 @@ class NewVisitorTest(unittest.TestCase):
         inputElem.send_keys('Go another walk')
         inputElem.send_keys(Keys.ENTER)
 
-        self.find_todo_item_in_list('1: Go for a walk')
-        self.find_todo_item_in_list('2: Go another walk')
+        self.find_item_in_list('1: Go for a walk')
+        self.find_item_in_list('2: Go another walk')
 
         # page provides a unique url to access previous entries
 
         # call unique url with previous entries
 
         self.fail('Have to finish all tests...')
-
-
-if __name__ == '__main__':
-    unittest.main()
