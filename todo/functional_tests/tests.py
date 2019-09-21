@@ -41,7 +41,7 @@ class NewVisitorTest(LiveServerTestCase):
         # check that is the proper home page
         headerElem = self.browser.find_element_by_tag_name('h1')
         self.assertIn('ToDo lists', self.browser.title)
-        self.assertIn('Your ToDo list', headerElem.text)
+        self.assertIn('New ToDo list', headerElem.text)
 
         # can enter a new todo item
         inputElem = self.browser.find_element_by_id('add_todo')
@@ -69,10 +69,10 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.quit()
         self.browser = webdriver.Firefox()
         self.browser.get(self.live_server_url)
-        listElem = self.browser.find_element_by_id('todo_list')
-        itemElems = listElem.find_elements_by_tag_name('li')
-        print([x.text for x in itemElems])
-        self.assertEqual(len(itemElems), 0)
+        ##listElem = self.browser.find_element_by_id('todo_list')
+        ##itemElems = listElem.find_elements_by_tag_name('li')
+        ##print([x.text for x in itemElems])
+        ##self.assertEqual(len(itemElems), 0)
 
         # enter an item
         # and updated page should display the text entered

@@ -3,25 +3,19 @@ from django.urls import reverse, resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 
-from lists.views import home_page
+from lists.views import home
 from lists.models import Item
 
 
 class HomePageTest(TestCase):
 
-    def send_a_POST_request(self, text):
-        req = HttpRequest()
-        req.method = 'POST'
-        req.POST['add_todo'] = text
-        return home_page(req)
-
-    def test_root_url_calls_home_page_view(self):
+    def test_calls_home_view(self):
         found = resolve(reverse('home'))
-        self.assertEqual(found.func, home_page)
+        self.assertEqual(found.func, home)
 
-    def test_home_page_view_returns_correct_html(self):
+    def test_returns_correct_html(self):
         req = HttpRequest()
-        res = home_page(req)
+        res = home(req)
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(res.content.strip().startswith(b'<html>'))
@@ -30,25 +24,11 @@ class HomePageTest(TestCase):
         #expected_html = render_to_string('lists/home.html')
         #self.assertEqual(res.content.decode(), expected_html)
 
-    def test_home_page_saves_a_valid_POST_request(self):
-        res = self.send_a_POST_request('A new item')
-        self.assertIn('A new item', [x.text for x in Item.objects.all()])
-
-    def test_home_page_not_saves_a_blank_POST_request(self):
-        res = self.send_a_POST_request('')
-        self.assertNotIn('', [x.text for x in Item.objects.all()])
-
-    def test_home_page_redirects_after_a_POST_request(self):
-        res = self.send_a_POST_request('A new item')
-
-        self.assertEqual(res.status_code, 302)
-        self.assertEqual(res['location'], '/lists/unique_name')
-
     #def test_home_page_displays_saved_list_items(self):
     #    Item.objects.create(text='Item 1')
     #    Item.objects.create(text='Item 2')
     #    req = HttpRequest()
-    #    res = home_page(req)
+    #    res = home(req)
 
     #    self.assertIn('Item 1', res.content.decode())
     #    self.assertIn('Item 2', res.content.decode())
@@ -74,10 +54,14 @@ class ItemModelTest(TestCase):
 
 class ListPageTest(TestCase):
 
-    def test_list_page_displays_all_items(self):
+    def test_uses_list_template(self):
+        res = self.client.get('/lists/unique-name/')
+        self.assertTemplateUsed(res, 'lists/list.html')
+
+    def test_displays_all_items(self):
         Item.objects.create(text='Item 1')
         Item.objects.create(text='Item 2')
-        res = self.client.get('/lists/unique_name/')
+        res = self.client.get('/lists/unique-name/')
         # Instead of calling the view function directly
         # we use the attribute client of the Django TestCase
         self.assertEqual(res.status_code, 200)
@@ -86,3 +70,32 @@ class ListPageTest(TestCase):
         # Instead of assertIn/response.content.decode()
         # Django provides the assertContains method which knows
         # how to deal with responses and the bytes of their content
+
+
+class NewListTest(TestCase):
+
+    def send_a_POST_request(self, text):
+        #req = HttpRequest()
+        #req.method = 'POST'
+        #req.POST['add_todo'] = text
+        #return home(req)
+        return self.client.post(
+            '/lists/new',
+            data={'add_todo': text}
+        )
+
+    def test_saves_a_valid_POST_request(self):
+        res = self.send_a_POST_request('A new item')
+        self.assertIn('A new item', [x.text for x in Item.objects.all()])
+
+    def test_not_saves_a_blank_POST_request(self):
+        res = self.send_a_POST_request('')
+        self.assertNotIn('', [x.text for x in Item.objects.all()])
+
+    def test_redirects_after_a_POST_request(self):
+        res = self.send_a_POST_request('A new item')
+
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res['location'], '/lists/unique-name/')
+        # or similar check:
+        self.assertRedirects(res, '/lists/unique-name/')

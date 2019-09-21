@@ -8,19 +8,15 @@ def enter_item(req):
     if new_item:
         Item.objects.create(text=new_item)
 
-def home_page(req):
+def home(req):
     #return HttpResponse('<html><title>ToDo lists</title></html>')
-    if req.method == 'POST':
-        enter_item(req)
-        return redirect('/lists/unique_name')
+    return render(req, 'lists/home.html')
 
-    items = []
-    return render(req, 'lists/home.html', {'items': items})
-
-def list_page(req):
-    if req.method == 'POST':
-        enter_item(req)
-
+def list(req):
     items = Item.objects.all()
-    return render(req, 'lists/home.html', {'items': items})
+    return render(req, 'lists/list.html', {'items': items})
+
+def new_list(req):
+    enter_item(req)
+    return redirect('/lists/unique-name/')
 
