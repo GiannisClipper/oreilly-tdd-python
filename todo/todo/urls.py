@@ -19,7 +19,9 @@ from django.urls import path
 from lists import views
 
 urlpatterns = [
-    path('', views.home_page, name='home'),
-    path('lists/unique_name/', views.list_page, name='list_page'),
+    path('', views.home, name='home'),
+    path('lists/unique-name/', views.list, name='list'),
+    path('lists/new', views.new_list, name='new_list'),
+    # no trailing slash when url represent an action
     #path('admin/', admin.site.urls),
 ]
