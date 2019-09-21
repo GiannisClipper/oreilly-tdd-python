@@ -82,7 +82,7 @@ class NewVisitorTest(LiveServerTestCase):
         # page provides a unique url to access previous entries
         list2_url = self.browser.current_url
         self.assertRegex(list2_url, '/lists/.+')
-        self.assertNotEqual(list2, list1)
+        self.assertNotEqual(list2_url, list1_url)
 
         # call unique url with previous entries
         self.fail('Have to finish all tests...')
