@@ -8,6 +8,9 @@
         <form method="POST" action="{% block form_action %}{% endblock %}">
             {% csrf_token %}
             <input id="add_todo" name="add_todo" placeholder="Add new ToDo item">
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
         </form>
     
         {% block todo_list %}{% endblock %}
