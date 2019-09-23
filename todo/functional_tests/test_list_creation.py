@@ -1,37 +1,8 @@
-from django.test import LiveServerTestCase
+from .base import FunctionalTest
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-
-import time
 
 
-class NewVisitorTest(LiveServerTestCase):
-
-    def setUp(self):
-        self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(3)
-        # Standard in Selenium tests. Selenium is reasonably good at waiting for
-        # pages to complete loading before it tries to do anything, but it’s not perfect.
-        # The implicitly_wait tells it to wait a few seconds if it needs to. When asked to find
-        # something on the page, Selenium will now wait up to three seconds for it to appear
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def enter_item_in_list(self, text):
-        inputElem = self.browser.find_element_by_id('add_todo')
-        inputElem.send_keys(text)
-        inputElem.send_keys(Keys.ENTER)
-        time.sleep(3)
-
-    def find_item_in_list(self, text):
-        listElem = self.browser.find_element_by_id('todo_list')
-        itemElems = listElem.find_elements_by_tag_name('li')
-        #print([x.text for x in itemElems])
-        #self.assertTrue(
-        #    any(x.text == text for x in itemElems)
-        #)
-        self.assertIn(text, [x.text for x in itemElems])
+class NewVisitorTest(FunctionalTest):
 
     def test_edit_a_new_list_and_retrieve_it_later(self):
         # a user calls home page
@@ -85,4 +56,3 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotEqual(list2_url, list1_url)
 
         # call unique url with previous entries
-        self.fail('Have to finish all tests...')
