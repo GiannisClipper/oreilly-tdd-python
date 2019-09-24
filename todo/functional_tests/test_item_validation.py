@@ -11,8 +11,8 @@ class ItemValidationTest(FunctionalTest):
         # user enters empty item and
         # page refreshes with an error message
         self.enter_item_in_list('')
-        err = self.browser.find_element_by_css_selector('.error')
-        self.assertEqual(err.text, 'Empty items not allowed')
+        error = self.browser.find_element_by_css_selector('.error')
+        self.assertEqual(error.text, 'Empty items not allowed')
 
         # user enter some text and now works
         self.enter_item_in_list('Go for shopping')
@@ -22,8 +22,8 @@ class ItemValidationTest(FunctionalTest):
         # page refreshes with an error message
         self.enter_item_in_list('')
         self.find_item_in_list('1: Go for shopping')
-        err = self.browser.find_element_by_css_selector('.error')
-        self.assertEqual(err.text, 'Empty items not allowed')
+        error = self.browser.find_element_by_css_selector('.error')
+        self.assertEqual(error.text, 'Empty items not allowed')
 
         # user enters some text again and works
         self.enter_item_in_list('Go for a coffee')

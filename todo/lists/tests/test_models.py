@@ -38,3 +38,7 @@ class ModelTest(TestCase):
             # full validation if DB not support some constraints
             item.full_clean()
             item.save()
+
+    def test_get_absolute_url(self):
+        list1 = List.objects.create()
+        self.assertEqual(list1.get_absolute_url(), f'/lists/{list1.id}/')
